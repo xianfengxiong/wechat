@@ -1,58 +1,35 @@
 package cn.wanru;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.support.AbstractDispatcherServletInitializer;
-
-import javax.servlet.Filter;
 
 /**
  * @author xxf
  * @since 1/24/17
  */
-@Configuration
-@ComponentScan
-@EnableWebMvc
-public class Application extends AbstractDispatcherServletInitializer{
+@SpringBootApplication
+public class Application extends WebMvcConfigurerAdapter {
 
-  @Override
-  protected WebApplicationContext createServletApplicationContext() {
-    AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
-    ctx.register(Application.class);
-    return ctx;
-  }
-
-  @Override
-  protected String[] getServletMappings() {
-    return new String[]{"/"};
-  }
-
-  @Override
-  protected WebApplicationContext createRootApplicationContext() {
-    return null;
-  }
-
-  @Override
-  protected Filter[] getServletFilters() {
-    return new Filter[]{
-        new AccessFilter()
-    };
+  public static void main(String[] args) {
+    SpringApplication.run(Application.class,args);
   }
 
   @Bean
-  public WebMvcConfigurerAdapter webConfig() {
-    return new WebMvcConfigurerAdapter() {
-      @Override
-      public void configureViewResolvers(ViewResolverRegistry registry) {
-        registry.jsp("/WEB-INF/jsp/",".jsp");
-      }
-    };
+  public FilterRegistrationBean filter() {
+    FilterRegistrationBean filter = new FilterRegistrationBean();
+    AccessFilter accessFilter = new AccessFilter();
+    filter.setFilter(accessFilter);
+    filter.addUrlPatterns("/**");
+    return filter;
+  }
+
+  @Override
+  public void configureViewResolvers(ViewResolverRegistry registry) {
+    registry.jsp("/WEB-INF/jsp/",".jsp");
   }
 
 }
