@@ -76,9 +76,9 @@ public class WxController {
 
     WxUserInfo wxUserInfo = JsonUtil.fromJson(entity,new TypeToken<WxUserInfo>(){});
     String openid = wxUserInfo.getOpenid();
-    User dbUser = userService.findByOpenID(openid);
+    User user = userService.findByOpenID(openid);
 
-    if (dbUser == null){
+    if (user == null){
       cache.put(openid,wxUserInfo);
       log.info("openid {} not bind yet,cache it",openid);
 
@@ -88,7 +88,7 @@ public class WxController {
     }
     else{
       ModelAndView indexView = new ModelAndView("index");
-      indexView.addObject("user",dbUser);
+      indexView.addObject("user",user);
       return indexView;
     }
   }
@@ -102,13 +102,25 @@ public class WxController {
     user.setAccount(account);
     user.setPassword(password);
     user.setOpenid(wxUserInfo.getOpenid());
-    user = userService.saveUser(user);
+    user.setUnionid(wxUserInfo.getUnionid());
+    user.setCountry(wxUserInfo.getCountry());
+    user.setProvince(wxUserInfo.getProvince());
+    user.setCity(wxUserInfo.getCity());
+    user.setHeadimgurl(wxUserInfo.getHeadimgurl());
+    user.setUnionid(wxUserInfo.getUnionid());
+    user.setNickname(wxUserInfo.getNickname());
+    user.setSex(wxUserInfo.getSex());
+    user = userService.save(user);
 
     ModelAndView indexView = new ModelAndView("index");
     indexView.addObject("user",user);
     return indexView;
   }
 
+  @RequestMapping("/loginform")
+  public ModelAndView loginForm() {
+    return new ModelAndView("wxlogin");
+  }
 
 
 

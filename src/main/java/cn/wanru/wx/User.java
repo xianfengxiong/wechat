@@ -1,12 +1,21 @@
 package cn.wanru.wx;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /**
  * @author xxf
  * @since 1/23/17
  */
+@Entity
+@Table(name="user")
 public class User {
 
-  private int id;
+  @Id
+  @GeneratedValue
+  private Long id;
 
   private String account;
 
@@ -28,11 +37,11 @@ public class User {
 
   private String unionid;
 
-  public int getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
