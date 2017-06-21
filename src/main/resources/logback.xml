@@ -8,6 +8,18 @@
         </encoder>
     </appender>
 
+    <appender name="debug" class="ch.qos.logback.core.FileAppender">
+        <file>/debug.log</file>
+        <encoder>
+            <pattern>%level %d{yyyy-MM-dd HH:mm:ss} [%thread] %logger:%line - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <logger name="cn.wanru" additivity="false" level="debug">
+        <appender-ref ref="debug" />
+    </logger>
+
     <root level="debug">
         <appender-ref ref="STDOUT"/>
     </root>
