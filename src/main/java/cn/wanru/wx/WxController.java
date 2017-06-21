@@ -57,7 +57,7 @@ public class WxController {
 
   @RequestMapping("/login")
   public void login(HttpServletResponse response) throws IOException {
-    String redirectUrl = "http://www.wangruxiong.cn/wx/callback";
+    String redirectUrl = "http://www.wanruxiong.cn/wx/callback";
     String encodedUrl = URLEncoder.encode(redirectUrl, "UTF-8");
 
     String url = "https://open.weixin.qq.com/connect/oauth2/authorize?" +
