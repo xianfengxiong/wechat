@@ -69,17 +69,21 @@ public class UserService {
     }
   }
 
-  public User saveUserInfo(User user) throws SQLException {
-    String sql = "update user set " +
-        "openid = ?,nickname = ?," +
-        "sex = ?,province = ?," +
-        "city = ?,country = ?," +
-        "headimgurl=?,unionid=? " +
-        "where account=? and password=?";
+  public User saveUser(User user) throws SQLException {
+    String sql = "insert into user(account," +
+        "password,openid,nickname,sex," +
+        "province,city,country,headimgurl," +
+        "unionid) values(?,?,?,?,?,?,?,?,?,?)";
 
     Connection conn = JdbcUtils.getConnection();
     QueryRunner queryRunner = new QueryRunner();
-    int result = queryRunner.update(conn,sql,
+    Long id = queryRunner.insert(conn, sql, new ResultSetHandler<Long>() {
+      @Override
+      public Long handle(ResultSet rs) throws SQLException {
+        return rs.getLong(0);
+      }
+    },user.getAccount(),
+        user.getPassword(),
         user.getOpenid(),
         user.getNickname(),
         user.getSex(),
@@ -87,15 +91,12 @@ public class UserService {
         user.getCity(),
         user.getCountry(),
         user.getHeadimgurl(),
-        user.getUnionid(),
-        user.getAccount(),
-        user.getPassword());
-    if (result > 0) {
-      return findByOpenID(user.getOpenid());
+        user.getUnionid());
+    if (id != null) {
+      return user;
     }
     else{
       return null;
     }
   }
-
 }
