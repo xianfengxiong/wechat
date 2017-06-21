@@ -23,7 +23,7 @@ public class Application extends WebMvcConfigurerAdapter {
     FilterRegistrationBean filter = new FilterRegistrationBean();
     AccessFilter accessFilter = new AccessFilter();
     filter.setFilter(accessFilter);
-    filter.addUrlPatterns("/**");
+    filter.addUrlPatterns("/*");
     return filter;
   }
 
