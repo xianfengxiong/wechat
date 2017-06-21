@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>微信绑定</title>
+    <meta charset="UTF-8">
 </head>
 <body>
     <form action="/wx/bind" method="post">

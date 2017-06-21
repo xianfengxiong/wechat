@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>welcome</title>
+    <meta charset="UTF-8">
 </head>
 <body>
     Welcome, your detail info list :
