@@ -57,7 +57,7 @@ public class WxController {
 
   @RequestMapping("/login")
   public void login(HttpServletResponse response) throws IOException {
-    String redirectUrl = "http://www.wangruxiong.cn/wx/callBack";
+    String redirectUrl = "http://www.wanruxiong.cn/wx/callback";
     String encodedUrl = URLEncoder.encode(redirectUrl, "UTF-8");
 
     String url = "https://open.weixin.qq.com/connect/oauth2/authorize?" +
@@ -74,7 +74,7 @@ public class WxController {
     log.info("redirect to wechat success.");
   }
 
-  @RequestMapping("/callBack")
+  @RequestMapping("/callback")
   public ModelAndView callBack(HttpServletRequest request)
       throws IOException, SQLException, ServletException {
 
