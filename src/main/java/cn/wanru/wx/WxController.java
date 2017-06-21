@@ -61,37 +61,37 @@ public class WxController {
     String url = WxUtil.getAccessTokenUrl(code);
     String entity = Jsoup.connect(url).maxBodySize(0).execute().body();
     AccessToken accessToken = JsonUtil.fromJson(entity,new TypeToken<AccessToken>() {});
-
-    log.info("get access_token success,accessToken={}",accessToken);
-    return getUserInfo(accessToken);
+    User user = userService.findByOpenID(accessToken.getOpenid());
+    if (user == null) {
+      return getUserInfo(accessToken);
+    }else{
+      return skipBind(user);
+    }
   }
 
-  private ModelAndView getUserInfo(AccessToken accessToken)
-      throws IOException {
+  private ModelAndView skipBind(User user) {
+    ModelAndView mav = new ModelAndView("index");
+    mav.addObject("user",user);
+    return mav;
+  }
 
+  private ModelAndView getUserInfo(AccessToken accessToken) throws IOException {
     String url = WxUtil.getUserInfoUrl(accessToken);
     String entity = Jsoup.connect(url).maxBodySize(0).execute().body();
 
     log.info("get user info entity string {}",entity);
 
     WxUserInfo wxUserInfo = JsonUtil.fromJson(entity,new TypeToken<WxUserInfo>(){});
-    String openid = wxUserInfo.getOpenid();
-    User user = userService.findByOpenID(openid);
-
-    if (user == null){
-      cache.put(openid,wxUserInfo);
-      log.info("openid {} not bind yet,cache it",openid);
-
-      ModelAndView bindView = new ModelAndView("wx_bind");
-      bindView.addObject("openid",openid);
-      return bindView;
-    }
-    else{
-      ModelAndView indexView = new ModelAndView("index");
-      indexView.addObject("user",user);
-      return indexView;
-    }
+    return bindPage(wxUserInfo);
   }
+
+  private ModelAndView bindPage(WxUserInfo wxUserInfo) {
+    ModelAndView mav = new ModelAndView("wx_bind");
+    cache.put(wxUserInfo.getOpenid(),wxUserInfo);
+    mav.addObject("openid",wxUserInfo.getOpenid());
+    return mav;
+  }
+
 
   @RequestMapping("/bind")
   public ModelAndView bindAccount(String openid,String account,String password)
@@ -112,9 +112,7 @@ public class WxController {
     user.setSex(wxUserInfo.getSex());
     user = userService.save(user);
 
-    ModelAndView indexView = new ModelAndView("index");
-    indexView.addObject("user",user);
-    return indexView;
+    return skipBind(user);
   }
 
   @RequestMapping("/loginform")
