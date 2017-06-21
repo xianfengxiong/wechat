@@ -8,6 +8,14 @@
         </encoder>
     </appender>
 
+    <appender name="access" class="ch.qos.logback.core.FileAppender">
+        <file>./log/access.log</file>
+        <encoder>
+            <pattern>%level %d{yyyy-MM-dd HH:mm:ss} [%thread] %logger:%line - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
     <appender name="debug" class="ch.qos.logback.core.FileAppender">
         <file>./log/debug.log</file>
         <encoder>
@@ -15,6 +23,10 @@
             <charset>UTF-8</charset>
         </encoder>
     </appender>
+
+    <logger name="cn.wanru.AccessFilter" additivity="false" level="debug">
+        <appender-ref ref="access" />
+    </logger>
 
     <logger name="cn.wanru" additivity="false" level="debug">
         <appender-ref ref="debug" />
